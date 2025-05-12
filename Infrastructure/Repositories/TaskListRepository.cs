@@ -26,7 +26,9 @@ namespace Infrastructure.Repositories
 
         public async Task<TaskList?> GetByIdAsync(Guid id)
         {
-            return await _context.TaskLists.FindAsync(id);
+            return await _context.TaskLists
+                .Include(l => l.ToDoItems)
+                .FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public async Task<IEnumerable<TaskList>> GetByUserIdAsync(Guid userId)

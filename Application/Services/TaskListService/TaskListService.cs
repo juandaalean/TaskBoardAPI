@@ -34,10 +34,23 @@ namespace Application.Services.TaskListService
             return taskList;
         }
 
-        public async Task<ErrorOr<IEnumerable<CreateTaskListDto>>> GetAllTasksList(Guid userId)
+        public async Task<ErrorOr<IEnumerable<TaskListResponseDto>>> GetAllTasksList(Guid userId)
         {
             var lists = await _taskListRepo.GetByUserIdAsync(userId);
-            var mapped = _mapper.Map<IEnumerable<CreateTaskListDto>>(lists);
+            var mapped = lists.Select(list => new TaskListResponseDto
+            {
+                Id = list.Id,
+                Name = list.Name,
+                Tasks = list.ToDoItems.Select(item => new ToDoItemResponseDto
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    State = item.State,
+                    StartDate = item.StartDate,
+                    LimitDate = item.LimitDate
+                }).ToList()
+            });
             return ErrorOrFactory.From(mapped);
         }
     }

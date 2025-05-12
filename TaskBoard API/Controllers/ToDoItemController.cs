@@ -54,7 +54,18 @@ namespace TaskBoard_API.Controllers
             var result = await _itemService.CreateToDoItemAsync(toDoItem, taskListId);
 
             return result.Match(
-                item => CreatedAtAction(nameof(GetAll), new { taskListId = item.TaskListId }, item),
+                item =>
+                {
+                    var dto = new ToDoItemDto
+                    {
+                        Title = toDoItem.Title,
+                        Description = toDoItem.Description,
+                        StartDate = toDoItem.StartDate,
+                        LimitDate = toDoItem.LimitDate,
+                        State = toDoItem.State
+                    };
+                    return CreatedAtAction(nameof(GetAll), new { taskListId = item.TaskListId }, dto);
+                },
                 errors => Problem(errors)
             );
         }

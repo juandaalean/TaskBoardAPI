@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Enum;
 using Domain.Interfaces;
 using ErrorOr;
+using System.Collections.Generic;
 
 namespace Application.Services.ToDoItemService
 {
@@ -54,11 +55,30 @@ namespace Application.Services.ToDoItemService
             return Result.Deleted;
         }
 
-        public async Task<ErrorOr<IEnumerable<ToDoItemDto>>> GetAllToDoItemsAsync(Guid taskListId)
+        public async Task<ErrorOr<TaskListResponseDto>> GetAllToDoItemsAsync(Guid taskListId)
         {
-            var itemList = await _itemRepo.GetAllAsync(taskListId);
-            var mapped = _mapper.Map<IEnumerable<ToDoItemDto>>(itemList);
-            return ErrorOrFactory.From(mapped);
+            var taskList = await _taskListRepo.GetByIdAsync(taskListId);
+            if (taskList is null)
+            {
+                return Error.NotFound("TaskList.NotFound", "The tasklist was not found.");
+            }
+
+            var dto = new TaskListResponseDto
+            {
+                Id = taskList.Id,
+                Name = taskList.Name,
+                Tasks = taskList.ToDoItems.Select(item => new ToDoItemResponseDto
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    State = item.State,
+                    StartDate = item.StartDate,
+                    LimitDate = item.LimitDate
+                }).ToList()
+            };
+
+            return dto;
         }
 
         public async Task<ErrorOr<IEnumerable<ToDoItemDto>>> GetByStateAsync(States state, Guid userId)

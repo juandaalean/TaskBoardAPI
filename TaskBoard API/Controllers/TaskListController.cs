@@ -38,9 +38,15 @@ namespace TaskBoard_API.Controllers
 
             var result = await _taskService.CreateTaskListAsync(response, userId);
             return result.Match(
-                taskList => CreatedAtAction(nameof(GetAllTaskList), new { ìd = taskList.Id }, taskList),
+                taskList => {
+                    var dto = new CreateTaskListDto
+                    {
+                        Name = taskList.Name
+                    };
+                    return CreatedAtAction(nameof(GetAllTaskList), new { id = taskList.Id }, dto);
+                },
                 errors => Problem(errors)
-                );
+            );
         }
     }
 }

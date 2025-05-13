@@ -10,7 +10,7 @@ namespace Domain.Interfaces
 {
     public interface IToDoItemRepository
     {
-        Task<IEnumerable<ToDoItem>> GetByUserIdAndStateAsync(Guid userId, States state);
+        Task<IEnumerable<ToDoItem>> GetByTaskListAndStateAsync(Guid taskListId, States state);
         Task<IEnumerable<ToDoItem>> GetAllAsync(Guid taskListId);
         Task<ToDoItem?> GetByIdAsync(Guid id);
         Task AddAsync(ToDoItem item);

@@ -37,11 +37,10 @@ namespace Infrastructure.Repositories
             return await _context.ToDoItems.FindAsync(id);
         }
 
-        public async Task<IEnumerable<ToDoItem>> GetByUserIdAndStateAsync(Guid userId, States state)
+        public async Task<IEnumerable<ToDoItem>> GetByTaskListAndStateAsync(Guid taskListId, States state)
         {
             return await _context.ToDoItems
-                .Include(i => i.TaskList)
-                .Where(i => i.TaskList.UserId == userId && i.State == state)
+                .Where(i => i.TaskList.Id == taskListId && i.State == state)
                 .ToListAsync();
         }
 

@@ -37,10 +37,11 @@ namespace TaskBoard_API.Controllers
         }
 
         [HttpGet("by-state")]
-        public async Task<IActionResult> GetByState([FromQuery] States state)
+        public async Task<IActionResult> GetByState(Guid taskListId,[FromQuery] States state)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _itemService.GetByStateAsync(state, userId);
+
+            var result = await _itemService.GetByStateAsync(state, taskListId, userId);
 
             return result.Match(
                 value => Ok(value),

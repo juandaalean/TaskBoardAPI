@@ -81,10 +81,17 @@ namespace Application.Services.ToDoItemService
             return dto;
         }
 
-        public async Task<ErrorOr<IEnumerable<ToDoItemDto>>> GetByStateAsync(States state, Guid userId)
+        public async Task<ErrorOr<IEnumerable<ToDoItemDto>>> GetByStateAsync(States state, Guid taskListId, Guid userId)
         {
-            var itemList = await _itemRepo.GetByUserIdAndStateAsync(userId, state);
-            var mapped = _mapper.Map<IEnumerable<ToDoItemDto>>(itemList);
+            var taskList = await _taskListRepo.GetByIdAsync(taskListId);
+
+            if (taskList is null || taskList.UserId != userId)
+            {
+                return Error.Unauthorized("TaskList.Unauthorized", "Unauthorized tasklist");
+            }
+
+            var items = await _itemRepo.GetByTaskListAndStateAsync(taskListId, state);
+            var mapped = _mapper.Map<IEnumerable<ToDoItemDto>>(items);
             return ErrorOrFactory.From(mapped);
         }
 

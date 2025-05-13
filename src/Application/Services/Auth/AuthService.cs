@@ -10,6 +10,7 @@ namespace Application.Services.Auth
     {
         private readonly IUserRepository _userRepo;
         private readonly IJwtTokenGenerator _tokenGenerator;
+
         public AuthService(IUserRepository userRepo, IJwtTokenGenerator tokenGenerator)
         {
             _userRepo = userRepo;

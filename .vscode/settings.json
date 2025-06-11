@@ -1,0 +1,11 @@
+{
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "files.exclude": {
+      "**/bin": true,
+      "**/obj": true
+    },
+    "omnisharp.useModernNet": true,
+    "csharp.format.enable": true
+  }
+  
